@@ -24,7 +24,7 @@ app.use(express.json());
 
 // CORS configuration
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "https://www.mymeditest.shop");
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
@@ -110,23 +110,40 @@ app.listen(port, () => {
 //   }
 // });
 
-const assetID = 'ME3GxoaCSsuDN4jGAdXl7xxI02zmJM438WkUxg01Fodfo' // Asset Id of your video
+const ASSET_ID = 'ME3GxoaCSsuDN4jGAdXl7xxI02zmJM438WkUxg01Fodfo' // Asset Id of your video
 
-app.get("/retrieve", async (req, res) => {
-  try {
-    const response = await axios.get(
-      `${baseUrl}/video/v1/assets/${assetID}`,
-      {
-        cors_origin: "*",
-        new_asset_settings: {
-          playback_policy: ["public"],
-        },
-      },
-      options
-    );
-    return res.send(response);
-  } catch (error) {
-    console.error("Error Getting Playback ID:", error);
-    res.status(500).send("Error Getting Playback ID");
+const requestData = {
+  policy: 'public'
+};
+
+const config = {
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  auth: {
+    username: process.env.MUX_ACCESS_TOKEN_ID,
+    password: process.env.MUX_SECRET_KEY
   }
-});
+};
+
+let playbackId;
+
+axios.post(`https://api.mux.com/video/v1/assets/${ASSET_ID}/playback-ids`, requestData, config)
+  .then(response => {
+    playbackId = response.data.data.id;
+    console.log('Playback ID created:', playbackId);
+    
+    // Send the playback ID to the frontend or handle it as needed
+    // For example, you can send it in a response to the frontend
+    
+  })
+  .catch(error => {
+    console.error('Error creating playback ID:', error);
+    // Handle errors here
+    // For example, you can send an error response to the frontend
+   
+  });
+
+
+
+
