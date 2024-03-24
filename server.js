@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const courseRoutes = require("./routes/courseRoutes");
+const webRoutes=require("./routes/webhook")
 
 const app = express();
 
@@ -23,7 +24,7 @@ app.use(express.json());
 
 // CORS configuration
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Origin", "https://www.mymeditest.shop");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
@@ -67,10 +68,16 @@ app.post("/upload", async (req, res) => {
   }
 });
 
+
+
+
 // Route for checking server status
 app.get("/check", (req, res) => {
   res.send("Server is up and running!");
 });
+
+app.use('/webhook',webRoutes);
+
 
 // Route for handling course-related operations
 app.use("/courses", courseRoutes);
@@ -103,7 +110,7 @@ app.listen(port, () => {
 //   }
 // });
 
-const assetID = '' // Asset Id of your video
+const assetID = 'ME3GxoaCSsuDN4jGAdXl7xxI02zmJM438WkUxg01Fodfo' // Asset Id of your video
 
 app.get("/retrieve", async (req, res) => {
   try {
